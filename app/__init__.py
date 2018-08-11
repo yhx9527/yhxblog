@@ -35,5 +35,13 @@ def create_app(config_name):
         from flask_sslify import SSLify
         sslify = SSLify(app)
 
+    from .views.user import user as user_blueprint
+    app.register_blueprint(user_blueprint)
+
+    from .views.auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint,url_prefix='/auth')
+
+    from .views.admin import admin as admin_blueprint
+    app.register_blueprint(admin_blueprint,url_prefix='/admin')
 
     return app
