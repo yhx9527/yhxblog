@@ -1,4 +1,5 @@
 import os
+import psycopg2
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -32,19 +33,19 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-        'postgresql://yhx9527:yhx9527@127.0.0.1:5432/yhxblogdb'
+        'postgresql+psycopg2://yhx9527:yhx9527@127.0.0.1:5432/yhxblogdb'
 
 
 class TestingConfig(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False   #测试环境禁用CSRF保护
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-        'postgresql://yhx9527:yhx9527@127.0.0.1:5432/yhxblogtestdb'
+        'postgresql+psycopg2://yhx9527:yhx9527@127.0.0.1:5432/yhxblogtestdb'
 
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'postgresql://yhx9527:yhx9527@127.0.0.1:5432/yhxblogproddb'
+        'postgresql+psycopg2://yhx9527:yhx9527@127.0.0.1:5432/yhxblogproddb'
 
     @classmethod
     def init_app(cls,app):

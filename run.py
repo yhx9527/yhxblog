@@ -1,6 +1,10 @@
 import os
 from app import create_app,db
-from app.models import User,Role,Permission,Post,Follow
+from app.models.role_model import Role,Permission
+from app.models.user_model import User,Follow
+from app.models.post_model import Post
+from app.models.comment_model import Comment
+
 from flask_script import Manager,Shell
 from flask_migrate import Migrate,MigrateCommand
 from flask_login import login_required
@@ -17,7 +21,7 @@ if os.environ.get('FLASKY_COVERAGE'):
 
 
 def make_shell_context():
-    return dict(app=app,db=db,User=User,Role=Role,Permission=Permission,Post=Post)
+    return dict(app=app,db=db,User=User,Role=Role,Permission=Permission,Post=Post,Follow=Follow,Comment=Comment)
 #manager.add_command("shell",Shell(make_context=make_shell_context()))
 manager.add_command('db',MigrateCommand)
 
@@ -52,10 +56,21 @@ def profile(length=25,profile_dir=None):
     app.run()
 
 @manager.command
+def createdb():
+    from app import db
+    from app.models.role_model import Role
+
+    db.create_all()
+    #migrate.init()
+    #migrate.migrate(message='第一次迁移')
+    #migrate.upgrade()
+
+    Role.insert_roles()
+
+@manager.command
 def deploy():
     from flask_migrate import migrate,upgrade
-    from app.models import Role,User
-
+    from app.models.role_model import Role
 
     #将数据库迁移到最新修订版本
     upgrade()
