@@ -1,2 +1,3 @@
 -r common.txt
 ForgeryPy==0.1
+flask-debugtoolbar == 0.10.1

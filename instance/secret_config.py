@@ -1,0 +1,8 @@
+SECRET_KEY = 'In fact I love you'
+MAIL_USERNAME = 'yhx.9527.lsc@gmail.com'
+MAIL_PASSWORD = 'liushuchang12138'
+FLASKY_MAIL_SUBJECT_PREFIX = '[YHX-BLOG]'
+FLASKY_MAIL_SENDER = 'yhx.9527.lsc@gmail.com'
+FLASKY_ADMIN = '540230904@qq.com'
+DB_USERNAME = 'yhx9527'
+DB_PASSWORD = 'yhx9527'
