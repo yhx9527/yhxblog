@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="{{ url_for('static',filename = 'favicon.ico')}}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static',filename = 'favicon.ico')}}" type="image/x-icon">
+    {% block head %}
+    <title>yhxblog</title>
+    <link rel="stylesheet" href="../static/css/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link href="../static/css/style.css" rel="stylesheet">
+    {% endblock %}
+</head>
+<body class="h-100">
+    <header>
+    <nav class="navbar navbar-expand-md bg-white border-bottom box-shadow fixed-top">
+      <a class=" mb-0 font-weight-bold h2" href="{{url_for('user.index')}}">YHX-BLOG</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse ml-5" id="navbarsExample04">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link text-dark" href="{{ url_for('user.index')}}">首页</a>
+            </li>
+             {% if current_user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="#">个人中心</a>
+            </li>
+              {% endif %}
+             {% if current_user.can(Permission.WRITE_ARTICLES) %}
+              <li class="nav-item">
+                  <a class=" nav-link text-dark" href="#">博文管理</a>
+              </li>
+              {% endif %}
+              {% if current_user.can(Permission.MODERATE_COMMENTS) %}
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="#">评论管理</a>
+            </li>
+              {% endif %}
+              {% if current_user.is_administrator() %}
+            <li class="nav-item">
+                <a class="nav-link text-dark" href="#">用户管理</a>
+            </li>
+              {% endif %}
+        </ul>
+             <ul class="nav">
+                  {% if current_user.is_authenticated %}
+                <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img>{{current_user.name}}</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item text-muted" href="#">修改密码</a>
+              <a class="dropdown-item text-muted" href="#">修改邮箱</a>
+              <a class="dropdown-item text-muted" href="#">登出</a>
+            </div>
+          </li>
+            {% else%}
+            <li><a class="btn btn-outline-secondary" href="{{url_for('auth.login')}}">登录</a></li>
+            {% endif %}
+              </ul>
+      </div>
+    </nav>
+    </header>
+        <main role="main" class="no-gutters h-100" style="overflow-x: hidden">
+        <div class="row h-100">
+            <div class="col-sm-2 col-md-2 d-flex align-items-center justify-content-start ">
+                <div class="accordion card d-flex flex-md-row h-50 box-shadow-card" id="accordion">
+                    <div id="collapseOne" class="collapse show my-auto" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body text-center">
+                            <img class="rounded-circle" alt="头像" src="">
+                            <h5 class="card-title">雨含香</h5>
+                            <h6 class="card-subtitle text-muted mb-2">--A rookie newbie on the Way</h6>
+                            <p class="card-text">脚踏实地真好</p>
+                            <a href="" class="card-link"> <i class="fab fa-github"></i>github</a>
+                            <a href="" class="card-link"><i class="fas fa-at"></i>gmail</a>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-secondary"style="border-radius: 0px;" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"aria-controls="collapseOne">
+                        <p class="w-25"style="writing-mode: vertical-rl;">了解一下博主</p>
+                    </button>
+
+                </div>
+            </div>
+            <div class="col-10 col-sm-6 col-md-6 offset-sm-1 offset-md-1">
+                {% block content %}
+                {% endblock %}
+
+
+            </div>
+            <div class="col-2 col-sm-3 col-md-3">
+
+            </div>
+        </div>
+        </main>
+    <footer class="fixed-bottom footer ">
+        <div class="container mx-auto">
+          <p style="text-align: center;">Copyright @2018 YHX-BLOG by<a href="https://twitter.com/mdo">雨含香</a></p>
+        </div>
+    </footer>
+    {% block jsfile %}
+    <script src="../static/js/lib/jquery-3.3.1.min.js"></script>
+    <script src="../static/js/lib/bootstrap.min.js"></script>
+    {% endblock %}
+</body>
+</html>

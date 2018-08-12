@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+{{super()}}
+<div class="container d-flex align-items-end  mb-5 border-bottom"style="height:15%;">
+    <h2 class=" font-italic">Register</h2>
+</div>
+ {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert"aria-label="Close"><span aria-hidden="true"> &times;</span></button>
+                </div>
+                {% endfor %}
+<div class="col-md-8 order-md-1">
+          <form class="needs-validation" method="post" role="form" novalidate>
+               {{form.hidden_tag()}}
+            <div class="mb-3">
+              <label for="username">Username</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">@</span>
+                </div>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                <div class="invalid-feedback" style="width: 100%;">
+                  Your username is required.
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com">
+              <div class="invalid-feedback">
+                Please enter a valid email address.
+              </div>
+            </div>
+              <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="password">Password</label>
+                <input type="text" class="form-control" id="password" name="password" placeholder="" value="" type="password" required>
+                <div class="invalid-feedback">
+                  Valid password is required.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="password2">Confirm Password</label>
+                <input type="text" class="form-control" type='password'id="password2" name="password2" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  Please confirm your password.
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit" id="submit" name="submit" value="Register">Regitser</button>
+          </form>
+        </div>
+
+{% endblock %}
