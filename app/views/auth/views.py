@@ -24,7 +24,7 @@ def login():
 def logout():
     logout_user()
     flash('Logout Success')
-    return redirect(url_for('auth.index'))
+    return redirect(url_for('user.index'))
 
 @auth.route('/register',methods=['GET','POST'])
 def register():
@@ -87,7 +87,7 @@ def change_password():
             db.session.commit()
             flash('密码修改成功,请重新登录')
             logout_user()
-            return redirect(url_for('main.index'))
+            return redirect(url_for('user.index'))
         else:
             flash('原密码错误')
     return render_template("auth/change_password.html",form=form)
@@ -125,7 +125,7 @@ def password_reset(token):
 def change_email_request():
     form = ChangeEmailForm()
     if form.validate_on_submit():
-        if current_user.verify_password(form.password.data):
+        if current_user.vertify_password(form.password.data):
             new_email = form.email.data
             token = current_user.generate_email_change_token(new_email)
             send_email(new_email,'确认邮件地址','auth/email/change_email',user=current_user,token=token)
@@ -144,3 +144,21 @@ def change_email(token):
     else:
         flash('无效请求')
     return redirect(url_for('main.index'))
+
+@auth.route('/change_email_no',methods=['GET','POST'])
+@login_required
+def change_email_no():
+    form=ChangeEmailForm()
+    if form.validate_on_submit():
+        if current_user.email == form.email.data:
+            flash('It’s not new email!')
+        else:
+            if current_user.vertify_password(form.password.data):
+                current_user.email=form.email.data
+                db.session.add(current_user)
+                db.session.commit()
+                flash('Change Email Success!')
+                return redirect(url_for('user.index'))
+            else:
+                flash('Wrong Password')
+    return render_template('auth/change_email_no.html', form=form)

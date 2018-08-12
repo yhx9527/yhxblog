@@ -12,7 +12,7 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email',validators=[DataRequired(),Length(1,64),Email()])
-    username = StringField('Username',validators=[DataRequired(),Length(1,64),Regexp('^[A-Za-z][A-Za-z0-9_.]*$',0,'用户名必须只能有字母，数字，下划线或点号')])
+    username = StringField('Username',validators=[DataRequired(),Length(1,64)])
     password = PasswordField("Password",validators=[DataRequired(),EqualTo('password2',message='两次密码必须一致')])
     password2 = PasswordField('Confirm password',validators=[DataRequired()])
     submit = SubmitField('Register')

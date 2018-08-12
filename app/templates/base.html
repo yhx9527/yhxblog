@@ -16,7 +16,7 @@
 </head>
 <body class="h-100">
     <header>
-    <nav class="navbar navbar-expand-md bg-white border-bottom box-shadow fixed-top">
+    <nav class="navbar navbar-expand-md bg-white border-bottom box-shadow">
       <a class=" mb-0 font-weight-bold h2" href="{{url_for('user.index')}}">YHX-BLOG</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -48,14 +48,14 @@
             </li>
               {% endif %}
         </ul>
-             <ul class="nav">
+             <ul class="nav mr-5">
                   {% if current_user.is_authenticated %}
                 <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img>{{current_user.name}}</a>
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{ current_user.gravatar(size=18) }}">{{current_user.username}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item text-muted" href="#">修改密码</a>
-              <a class="dropdown-item text-muted" href="#">修改邮箱</a>
-              <a class="dropdown-item text-muted" href="#">登出</a>
+              <a class="dropdown-item text-muted" href="{{url_for('auth.change_password')}}">修改密码</a>
+              <a class="dropdown-item text-muted" href="{{url_for('auth.change_email_no')}}">修改邮箱</a>
+              <a class="dropdown-item text-muted" href="{{url_for('auth.logout')}}">登出</a>
             </div>
           </li>
             {% else%}
@@ -75,8 +75,8 @@
                             <h5 class="card-title">雨含香</h5>
                             <h6 class="card-subtitle text-muted mb-2">--A rookie newbie on the Way</h6>
                             <p class="card-text">脚踏实地真好</p>
-                            <a href="" class="card-link"> <i class="fab fa-github"></i>github</a>
-                            <a href="" class="card-link"><i class="fas fa-at"></i>gmail</a>
+                            <a href="https://github.com/yhx9527" class="card-link"> <i class="fab fa-github"></i>github</a>
+                            <a href=""class="card-link"><i class="fas fa-at"></i>gmail</a>
                         </div>
                     </div>
                     <button class="btn btn-outline-secondary"style="border-radius: 0px;" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"aria-controls="collapseOne">
@@ -87,6 +87,12 @@
             </div>
             <div class="col-10 col-sm-6 col-md-6 offset-sm-1 offset-md-1">
                 {% block content %}
+                 {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert"aria-label="Close"><span aria-hidden="true"> &times;</span></button>
+                </div>
+                {% endfor %}
                 {% endblock %}
 
 
@@ -98,7 +104,7 @@
         </main>
     <footer class="fixed-bottom footer ">
         <div class="container mx-auto">
-          <p style="text-align: center;">Copyright @2018 YHX-BLOG by<a href="https://twitter.com/mdo">雨含香</a></p>
+          <p style="text-align: center;">Copyright @2018 YHX-BLOG by<a href="https://github.com/yhx9527">雨含香</a></p>
         </div>
     </footer>
     {% block jsfile %}

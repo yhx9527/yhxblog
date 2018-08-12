@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="jumbotron bg-white border-bottom mt-2"style="height: 19%;">
-        <h1 class="display-5">Hello {% if current_user.is_authenticated %}{{current_user.name}}{%else%}Stranger{% endif %}!</h1>
+{{super()}}
+    <div class="jumbotron bg-white border-bottom pt-4"style="height: 15%;">
+        <h1 class="display-5">Hello {% if current_user.is_authenticated %}{{current_user.username}}{%else%}Stranger{% endif %}!</h1>
         <p class="lead">Welcome to my blog!I will record my study notes,thinking of life and so on...Hope you like it!</p>
     </div>
 
