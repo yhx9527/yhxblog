@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% import "_macros.html" as macros %}
+
+{% block content %}
+<div class="d-flex mt-5 h-25 flex-row">
+    <img class="rounded" src="{{ user.gravatar(size=256) }}" alt="头像">
+<div class="ml-5">
+    <div class="row">
+    <h1>{{user.username}}</h1>
+      <div class="ml-3 mt-1">
+    {% if current_user.can(Permission.FOLLOW) and user !=current_user %}
+        {% if not current_user.is_following(user) %}
+        <a href="{{ url_for('.follow',username = user.username) }}" class="btn btn-outline-primary btn-sm mr-2">关注</a>
+        {% else %}
+        <a href="{{ url_for('.unfollow',username = user.username) }}" class="btn btn-outline-warning btn-sm mr-2">取关</a>
+        {% endif %}
+    {% endif %}
+      </div>
+    </div>
+    <div style="margin-top: -10px;">
+    <a href="{{ url_for('.followers',username=user.username) }}" class="text-warning">Fans:<span class="badge badge-light">{{user.followers.count()}}</span></a>
+    <a href="{{ url_for('.followed_by',username=user.username) }}" class="text-info ml-1">Follows:<span class="badge badge-light">{{user.followed.count()}}</span></a>
+    </div>
+    <a href="Email:{{ user.email }}"><span class="badge badge-pill badge-light mr-0">邮箱</span> {{ user.email }}</a><br>
+    {% if user.location %}
+    <a href="http://maps.google.com/?q={{ user.location }}">
+        <span class="badge badge-pill badge-light mr-0">所在</span> {{ user.location }}
+    </a><br>
+    {% endif %}
+    {% if user.about_me %}<div><span class="badge badge-pill badge-light mr-0">简介</span> {{ user.about_me }}</div>{% endif %}
+    <p>
+        <span class="badge badge-pill badge-light mr-0">注册日期</span>{{ moment(user.member_since).format('L') }}.
+        <span class="badge badge-pill badge-light mr-0">最近活跃</span>{{moment(user.last_seen).fromNow() }}.
+    </p>
+    <div class="mb-1">
+        {% if user == current_user %}
+        <a class="btn btn-primary mr-2" href="{{ url_for('user.edit_profile') }}">编辑资料</a>
+        {% endif %}
+        {% if current_user.is_administrator() %}
+        <a class="ml-2 btn btn-danger" href="{{ url_for('user.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+        {% endif %}
+    </div>
+
+        {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
+    | <span class="label label-default">Follows you</span>
+    {% endif %}
+
+</div>
+</div>
+
+{% endblock %}

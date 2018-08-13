@@ -29,7 +29,7 @@
             </li>
              {% if current_user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link text-dark" href="#">个人中心</a>
+                <a class="nav-link text-dark" href="{{ url_for('user.usering',username=current_user.username) }}">个人中心</a>
             </li>
               {% endif %}
              {% if current_user.can(Permission.WRITE_ARTICLES) %}
@@ -70,8 +70,8 @@
             <div class="col-sm-2 col-md-2 d-flex align-items-center justify-content-start ">
                 <div class="accordion card d-flex flex-md-row h-50 box-shadow-card" id="accordion">
                     <div id="collapseOne" class="collapse show my-auto" aria-labelledby="headingOne" data-parent="#accordion">
-                        <div class="card-body text-center">
-                            <img class="rounded-circle" alt="头像" src="">
+                        <div class="card-body text-center"   style=" margin-top: -6rem;">
+                            <img class="rounded-circle mb-4" alt="头像" src="{{ current_user.gravatar(size=70) }}">
                             <h5 class="card-title">雨含香</h5>
                             <h6 class="card-subtitle text-muted mb-2">--A rookie newbie on the Way</h6>
                             <p class="card-text">脚踏实地真好</p>

@@ -27,7 +27,7 @@
             <div class="blog-post">
                 <h2 class="blog-post-title">{{post.title}}</h2>
                 <div class="row">
-                    <p class="blog-post-meta">{{ moment(post.timestamp).fromNow() }} by <a href="#">{{post.author.username}}</a></p>
+                    <p class="blog-post-meta">{{ moment(post.timestamp).fromNow() }} by <a href="{{url_for('user.usering',username=post.author.username)}}">{{post.author.username}}</a></p>
                     <p class="ml-5"><a href="#"><i class="fas fa-glasses mr-1"></i>{{post.read}}</a></p>
                     <p class="ml-5"><a href="#"> <i class="far fa-comment-alt mr-1"></i>{{post.comments.count()}}</a></p>
                 </div>
