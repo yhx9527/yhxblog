@@ -20,4 +20,4 @@ def index():
                                                                 per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
                                                                 error_out=False)  # 里面有页数，文章等等等
     posts = pagination.items  # .items表示这一页的文章
-    return render_template('index.html', posts=posts, pagination=pagination)
+    return render_template('index.html', posts=posts, pagination=pagination,page=page)

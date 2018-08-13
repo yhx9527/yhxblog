@@ -1,0 +1,39 @@
+{% if page==1 %}
+      <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
+        <div class="col-md-6 px-0">
+          <h1 class="display-4 font-italic text-nowrap">--lasted--{% if posts %}{{posts[0].title}}{% endif %}</h1>
+            {% if posts %}
+            <div class="lead my-1 row">
+                <p class="mr-5"><i class="far fa-clock"></i>{{moment(posts[0].timestamp).format('YYYY年M月D日 h:mm:ss')}}</p>
+                <p class="ml-5"><a href="#"><i class="fas fa-glasses mr-1"></i>{{posts[0].read}}</a> </p>
+                <p class="ml-5"><a href="#"> <i class="far fa-comment-alt mr-1"></i>{{posts[0].comments.count()}}</a></p>
+            </div>
+            {% endif %}
+          <p class="lead my-3 text-truncate">{% if posts %}{{posts[0].body}}{% else %}博主还没想好写什么呢{% endif %}</p>
+            {% if posts %}
+            <p class="lead mb-0"><a href="#" class="text-white font-weight-bold">阅读全文</a></p>
+            {% endif %}
+        </div>
+      </div>
+{% endif %}
+    <div class="row">
+        <div class="col-md-12">
+              <h3 class="pb-3 mb-2 font-italic border-bottom">
+            All Posts
+        </h3>
+        </div>
+        {% for post in posts %}
+        <div class="col-md-11 offset-md-1 border-bottom mt-2 mb-1">
+            <div class="blog-post">
+                <h2 class="blog-post-title">{{post.title}}</h2>
+                <div class="row">
+                    <p class="blog-post-meta">{{ moment(post.timestamp).fromNow() }} by <a href="#">{{post.author.username}}</a></p>
+                    <p class="ml-5"><a href="#"><i class="fas fa-glasses mr-1"></i>{{post.read}}</a></p>
+                    <p class="ml-5"><a href="#"> <i class="far fa-comment-alt mr-1"></i>{{post.comments.count()}}</a></p>
+                </div>
+                <p class="text-truncate">{{post.body}}</p>
+                <p class="d-block float-right"><a href="#" class="text-info font-weight-bold">阅读全文</a></p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>

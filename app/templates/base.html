@@ -18,11 +18,11 @@
     <header>
     <nav class="navbar navbar-expand-md bg-white border-bottom box-shadow">
       <a class=" mb-0 font-weight-bold h2" href="{{url_for('user.index')}}">YHX-BLOG</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsSum" aria-controls="navbarsSum" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon "></span>
       </button>
 
-      <div class="collapse navbar-collapse ml-5" id="navbarsExample04">
+      <div class="collapse navbar-collapse ml-5" id="navbarsSum">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link text-dark" href="{{ url_for('user.index')}}">首页</a>
@@ -102,10 +102,16 @@
             </div>
         </div>
         </main>
-    <footer class="fixed-bottom footer ">
+    <!--footer class=" footer ">
         <div class="container mx-auto">
           <p style="text-align: center;">Copyright @2018 YHX-BLOG by<a href="https://github.com/yhx9527">雨含香</a></p>
         </div>
+    </footer-->
+    <footer class="blog-footer">
+      <p style="text-align: center;">Copyright @2018 YHX-BLOG by<a href="https://github.com/yhx9527">雨含香</a></p>
+      <p style="text-align: center;">
+        <a href="#">Back to top</a>
+      </p>
     </footer>
     {% block jsfile %}
     <script src="../static/js/lib/jquery-3.3.1.min.js"></script>
