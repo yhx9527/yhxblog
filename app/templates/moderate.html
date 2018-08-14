@@ -3,12 +3,16 @@
 {% block content %}
 <h3 class="mt-5 font-italic border-bottom mb-4">评论管理</h3>
 <div class="btn-group">
-    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        时间
+    <button type="button" class="btn btn-warning dropdown-toggle" id='comment_btn' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{sorttype}}
     </button>
-    <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">时间</a>
+    <div class="dropdown-menu"  id="comment_dropdown">
+        <a class="dropdown-item" href="{{url_for('user.moderate',sorttype='时间降序')}}">时间降序</a>
+        <a class="dropdown-item" href="{{url_for('user.moderate',sorttype='时间升序')}}">时间升序</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{{url_for('user.moderate',sorttype='博客id')}}">博客id</a>
     </div>
 </div>
-
+{% set moderate = True %}
+{% include '_comments.html' %}
 {% endblock %}

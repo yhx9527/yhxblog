@@ -168,13 +168,25 @@ def post(id):
 @permission_required(Permission.MODERATE_COMMENTS)
 def moderate():
     page = request.args.get('page',1,type=int)
-    pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
-        page,per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
-        error_out=False
-    )
+    sorttype = request.args.get('sorttype','时间降序',type=str)
+    if sorttype == '时间降序':
+        pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
+            page,per_page=current_app.config['FLASKY_ADMIN_COMMENTS_PER_PAGE'],
+            error_out=False
+        )
+    elif(sorttype == '时间升序'):
+        pagination = Comment.query.order_by(Comment.timestamp.asc()).paginate(
+            page, per_page=current_app.config['FLASKY_ADMIN_COMMENTS_PER_PAGE'],
+            error_out=False
+        )
+    elif(sorttype == '博客id'):
+        pagination = Comment.query.order_by(Comment.post_id.desc()).paginate(
+            page, per_page=current_app.config['FLASKY_ADMIN_COMMENTS_PER_PAGE'],
+            error_out=False
+        )
 
     comments = pagination.items
-    return render_template('moderate.html',comments=comments,pagination=pagination,page=page)
+    return render_template('moderate.html',comments=comments,pagination=pagination,sorttype=sorttype)
 
 
 
