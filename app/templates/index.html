@@ -6,7 +6,7 @@
         <h1 class="display-5">Hello {% if current_user.is_authenticated %}{{current_user.username}}{%else%}Stranger{% endif %}!</h1>
         <p class="lead">Welcome to my blog!I will record my study notes,thinking of life and so on...Hope you like it!</p>
     </div>
-    {% include 'posts.html' %}
+    {% include '_posts.html' %}
 
 {% if pagination %}
 <nav class="mt-5" aria-label="Page navigation">

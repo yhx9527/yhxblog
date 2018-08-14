@@ -38,7 +38,7 @@ def edit_profile():
         db.session.add(current_user)
         db.session.commit()
         flash('You Profile Update')
-        return redirect(url_for('.user',username = current_user.username))
+        return redirect(url_for('.usering',username = current_user.username))
     form.location.data = current_user.location
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html',form=form,admin=False)
@@ -131,3 +131,80 @@ def edit_profile_admin(id):
     form.location.data = user.location
     form.about_me.data = user.about_me
     return render_template('edit_profile.html',form=form,user=user,admin=True)
+
+
+
+#博客详情链接
+@user.route('/post/<int:id>',methods=['GET','POST'])
+def post(id):
+    post = Post.query.get_or_404(id)
+    form = CommentForm()
+    post.read = post.read +1
+    db.session.add(post)
+    db.session.commit()
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data,
+                          post = post,
+                          author= current_user._get_current_object())
+        db.session.add(comment)
+        db.session.commit()
+        flash('你的评论已提交')
+        return redirect(url_for('.post', id=post.id)) #page=-1用于请求最后一页
+    page = request.args.get('page',1,type=int)
+    if page == -1:
+        page = (post.comments.count()-1) /\
+                current_app.config['FLASKY_COMMENTS_PER_PAGE'] +1
+
+    pagination = post.comments.order_by(Comment.timestamp.desc()).paginate(
+        page,per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],error_out=False
+    )
+    comments = pagination.items
+    return render_template('post.html',post=post,form=form,
+                           comments=comments,pagination=pagination)
+
+#评论管理
+@user.route('/moderate')
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def moderate():
+    page = request.args.get('page',1,type=int)
+    sorttype = request.args.get('sorttype','desc',type=str)
+    if(sorttype == 'desc'):
+        pagination = Comment.query.order_by(Comment.timestamp.desc()).paginate(
+            page,per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
+            error_out=False
+        )
+    elif(sorttype == 'asc'):
+        pagination = Comment.query.order_by(Comment.timestamp.asc()).paginate(
+            page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
+            error_out=False
+        )
+    elif(sorttype == 'blogid'):
+        pagination = Comment.query.order_by(Comment.post_id.desc()).paginate(
+            page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
+            error_out=False
+        )
+    comments = pagination.items
+    return render_template('moderate.html',comments=comments,pagination=pagination,page=page)
+
+
+
+@user.route('/moderate/enable/<int:id>')
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def moderate_enable(id):
+    comment = Comment.query.get_or_404(id)
+    comment.disabled = False
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('.moderate',page=request.args.get('page',1,type=int)))
+
+@user.route('/moderate/disable/<int:id>')
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def moderate_disable(id):
+    comment = Comment.query.get_or_404(id)
+    comment.disabled = True
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))

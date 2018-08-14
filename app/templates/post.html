@@ -1,0 +1,35 @@
+{% extends "base.html"%}
+
+
+{% block content %}
+<h3 class="mt-5 font-italic border-bottom mb-4">Reading~</h3>
+ <div class="col-md-11 offset-md-1 mb-1">
+            <div class="blog-post">
+                <h2 class="blog-post-title text-center">{{post.title}}</h2>
+                <div class="d-flex flex-row justify-content-center">
+                    <p class="blog-post-meta">{{ moment(post.timestamp).fromNow() }} by <a href="{{url_for('user.usering',username=post.author.username)}}">{{post.author.username}}</a></p>
+                    <p class="ml-5"><a><i class="fas fa-glasses mr-1"></i>{{post.read}}</a></p>
+                    <p class="ml-5"><a href="#comments"> <i class="far fa-comment-alt mr-1"></i>{{post.comments.count()}}</a></p>
+                </div>
+                {% if post.body_html %}
+                {{ post.body_html | safe }}
+                {% else %}
+                <p>{{post.body}}</p>
+                {% endif %}
+            </div>
+ </div>
+<!--评论-->
+{% include '_comments.html' %}
+
+{% if current_user.can(Permission.COMMENT) %}
+    <form method="post" action="">
+        <div class="form-group mt-5">
+            {{form.hidden_tag()}}
+            {{form.body.label()}}
+            {{form.body(class='form-control')}}
+            {{form.submit(class='btn btn-primary mt-3')}}
+        </div>
+    </form>
+{% endif %}
+
+{% endblock %}
