@@ -211,11 +211,14 @@ def moderate_disable(id):
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
 
 #博客管理相关
-@user.route('/manage-post/write',methods=['GET','POST'])
+@user.route('/manage-post/<username>',methods=['GET','POST'])
 @login_required
 @permission_required(Permission.WRITE_ARTICLES)
-def write_post():
+def manage_post(username):
     form = PostForm()
+    user = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    tab = request.args.get('tab',1,type=int)
     if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
         if current_user.can(Permission.ADMINISTER):
             post = Post(title=form.title.data, body=form.body.data,
@@ -229,39 +232,64 @@ def write_post():
             db.session.add(post)
             db.session.commit()
             flash('已提交管理员审核,审核通过，您即可发布')
-        return redirect(url_for('.write_post'))
-    return render_template('manage_post.html',form=form)
+        return redirect(url_for('.manage_post',username=current_user.username))
 
-@user.route('/manage-post/<username>')
-@login_required
-@permission_required(Permission.WRITE_ARTICLES)
-def manage_post(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    page = request.args.get('page', 1, type=int)
     if user.can(Permission.ADMINISTER):
-        pagination = Post.query.all().order_by(Post.timestamp.desc()).paginate(page, per_page=
-        current_app.config[
-            'FLASKY_POSTS_PER_PAGE'], error_out=False)  # 里面有页数，文章等等等
+        pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page= \
+            current_app.config[
+                'FLASKY_POSTS_PER_PAGE'], error_out=False)  # 里面有页数，文章等等等
     else:
-        pagination = Post.query.filter_by(author_id=user.id).order_by(Post.timestamp.desc()).paginate(page, per_page=
+        pagination = Post.query.filter_by(author_id=user.id).order_by(Post.timestamp.desc()).paginate(page, per_page= \
             current_app.config[
                 'FLASKY_POSTS_PER_PAGE'], error_out=False)  # 里面有页数，文章等等等
     posts = pagination.items  # .items表示这一页的文章
-    # posts = user.posts.order_by(Post.timestamp.desc()).all()
-    return render_template('manage_post.html', user=user, posts=posts, pagination=pagination)
+
+    return render_template('manage_post.html',form=form,user=user,posts=posts,pagination=pagination,tab=tab)
+
 
 @user.route('/manage-post/del/<int:id>',methods=['DELETE','GET'])
 @login_required
 @permission_required(Permission.WRITE_ARTICLES)
 def del_post(id):
-    post = Post.query.filter_by(id=id)
-    if current_user != post.author and \
+    post = Post.query.filter_by(id=id).first()
+    if current_user.id != post.author_id and \
             not current_user.can(Permission.ADMINISTER):
         abort(403)
     db.session.delete(post)
     db.session.commit()
     flash('已删除文章')
-    return redirect(url_for('.manage_post',username=current_user.username))
+    return redirect(url_for('.manage_post',username=current_user.username,tab=2))
+
+@user.route('/manage-post/issue/<int:id>')
+@login_required
+@permission_required(Permission.WRITE_ARTICLES)
+def issue_post(id):
+    post = Post.query.filter_by(id=id).first()
+    if post.if_check ==True:
+        post.if_post = not post.if_post
+        db.session.add(post)
+        db.session.commit()
+        if post.if_post:
+            flash('文章已发布')
+        else:
+            flash('文章已收回')
+    else:
+        flash('请等待文章审核通过')
+    return redirect(url_for('.manage_post', username=current_user.username, tab=2))
+
+@user.route('/manage-post/check/<int:id>')
+@login_required
+@permission_required(Permission.WRITE_ARTICLES)
+def check_post(id):
+    post = Post.query.filter_by(id=id).first()
+    post.if_check = not post.if_check
+    db.session.add(post)
+    db.session.commit()
+    if post.if_check:
+        flash('该文章通过审核')
+    else:
+        flash('该文章已被下架')
+    return redirect(url_for('.manage_post', username=current_user.username, tab=2))
 
 """
     @user.route('manage-post/edit/<int:id>',methods=['GET','POST'])

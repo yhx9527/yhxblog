@@ -5,14 +5,14 @@
 {{super()}}
 <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="{{url_for('user.write_post')}}" role="tab" aria-controls="home" aria-selected="true">撰写博客</a>
+    <a class="nav-link {% if tab==1 %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="{% if tab==1 %}true{% else %}false{% endif %}">撰写博客</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="{{url_for('user.manage_post',username=current_user.username)}}" role="tab" aria-controls="profile" aria-selected="false">管理博客</a>
+    <a class="nav-link {% if tab==2 %}active{% endif %}" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="{% if tab==2 %}true{% else %}false{% endif %}">管理博客</a>
   </li>
 </ul>
 <div class="tab-content mt-5" id="myTabContent">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+  <div class="tab-pane fade {% if tab==1 %}show active{% endif %}" id="home" role="tabpanel" aria-labelledby="home-tab">
     {% if form %}
       <form method="post" action>
           {{form.hidden_tag()}}
@@ -22,14 +22,15 @@
           </div>
           <div class="form-group">
               {{form.body.label()}}
-              {{form.body(class='form-control')}}
+              <div class="d-flex flex-column align-content-between">
+                    {{form.body(class='form-control mb-2 blogtext')}}
+              </div>
           </div>
           {{form.submit(class='btn btn-primary')}}
       </form>
       {% endif %}
   </div>
-   <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
+   <div class="tab-pane fade {% if tab==2 %}show active{% endif %}" id="profile" role="tabpanel" aria-labelledby="profile-tab">
       <table class="table table-hover ">
           <thead>
             <tr>
@@ -52,7 +53,19 @@
                 <td>{{post.comments.count()}}</td>
                 <td><a class="btn btn-danger btn-sm" href="{{url_for('user.del_post',id=post.id)}}"><i class="fas fa-trash"></i>删除</a></td>
                 <td><a class="btn btn-warning btn-sm" href="{{url_for('user.del_post',id=post.id)}}"><i class="fas fa-feather-alt"></i>编辑</a></td>
-                <td><a class="btn btn-primary btn-sm" href="{{url_for('user.del_post',id=post.id)}}"><i class="fas fa-paper-plane"></i>发布</a></td>
+                {% if post.id == user.id %}
+                <td><a class="btn {% if post.if_post %}btn-secondary{%else%}btn-primary{% endif %} btn-sm" href="{{url_for('user.issue_post',id=post.id)}}">
+                    {% if post.if_post %}
+                    <i class="fas fa-paper-plane fa-rotate-180"></i>收回
+                    {% else %}<i class="fas fa-paper-plane"></i>发布{% endif %}</a></td>
+                {% else %}
+                    {% if user.can(Permission.ADMINISTER) %}
+                     <td><a class="btn {% if post.if_check %}btn-secondary{%else%}btn-primary{% endif %} btn-sm" href="{{url_for('user.check_post',id=post.id)}}">
+                    {% if post.if_check %}
+                    <i class="fas fa-times-circle"></i>下架
+                    {% else %}<i class="fas fa-check-square"></i>通过{% endif %}</a></td>
+                    {% endif %}
+                {% endif %}
             </tr>
             {% endfor %}
           </tbody>
@@ -60,7 +73,7 @@
       </table>
       {% if pagination %}
         <nav class="mt-5" aria-label="Page navigation">
-        {{ macros.pagination_widget(pagination,'user.manage_post') }}
+        {{ macros.pagination_widget(pagination,'user.manage_post',username=user.username,tab=2) }}
         </nav>
         {% endif %}
   </div>

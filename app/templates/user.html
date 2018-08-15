@@ -3,6 +3,7 @@
 {% import "_macros.html" as macros %}
 
 {% block content %}
+{{super()}}
 <div class="d-flex mt-5 h-25 flex-row">
     <img class="rounded" src="{{ user.gravatar(size=256) }}" alt="头像">
 <div class="ml-5">
@@ -60,9 +61,9 @@
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">home</div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile</div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact</div>
 </div>
 
 {% endblock %}

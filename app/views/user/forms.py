@@ -31,7 +31,7 @@ class EditProfileAdminForm(FlaskForm):
               User.query.filter_by(email=field.data).first():
             raise ValidationError('邮箱已被注册过了')
 
-    def validate_email(self,field):
+    def validate_username(self,field):
         if field.data != self.user.username and \
               User.query.filter_by(username=field.data).first():
             raise ValidationError('用户名已被注册过了')
