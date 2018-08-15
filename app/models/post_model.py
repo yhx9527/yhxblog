@@ -15,6 +15,7 @@ class Post(db.Model):
     body_html = db.Column(db.Text)
     love = db.Column(db.Integer,default=1)
     if_post = db.Column(db.Boolean,default=False)
+    if_check = db.Column(db.Boolean,default=False)
     read = db.Column(db.Integer,default = 1)
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
 

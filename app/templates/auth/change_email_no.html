@@ -14,6 +14,13 @@
       <div class="form-label-group">
         <input type="email" id="email" name='email'class="form-control" placeholder="New Email" required autofocus>
         <label for="email">New Email</label>
+          {% if form.email.errors %}
+                  {% for error in form.email.errors %}
+                  <div class="invalid-feedback">
+                    {{error}}
+                  </div>
+                  {% endfor %}
+                  {% endif %}
       </div>
 
       <div class="form-label-group">

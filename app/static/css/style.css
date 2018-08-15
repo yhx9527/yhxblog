@@ -91,6 +91,12 @@
   color: #999;
 }
 
+#flask-pagedown-body-preview {
+  border: 1px solid #ced4da;
+    border-radius: .25rem;
+  margin-top: 1rem;
+}
+
 /*
  * Footer
  */

@@ -34,7 +34,7 @@
               {% endif %}
              {% if current_user.can(Permission.WRITE_ARTICLES) %}
               <li class="nav-item">
-                  <a class=" nav-link text-dark" href="#">博文管理</a>
+                  <a class=" nav-link text-dark" href="{{url_for('user.write_post')}}">博文管理</a>
               </li>
               {% endif %}
               {% if current_user.can(Permission.MODERATE_COMMENTS) %}

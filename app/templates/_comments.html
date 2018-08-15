@@ -7,7 +7,7 @@
             <div class="d-flex flex-column">
                  <a href="{{url_for('user.usering',username=comment.author.username)}}"><img  alt="" class="mr-2 rounded" src="{{comment.author.gravatar(size=45)}}"></a>
                 {% if moderate %}
-                 <a href="#" class="mt-3 d-flex align-items-center"><span class="badge badge-dark">blogId</span>{{comment.post_id}}</a>
+                 <a href="{{url_for('user.post',id=comment.post_id)}}" class="mt-3 d-flex align-items-center"><span class="badge badge-dark">blogId</span>{{comment.post_id}}</a>
                 {% endif %}
             </div>
           <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">

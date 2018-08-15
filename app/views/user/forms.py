@@ -36,8 +36,10 @@ class EditProfileAdminForm(FlaskForm):
               User.query.filter_by(username=field.data).first():
             raise ValidationError('用户名已被注册过了')
 
+
 #博客表单
 class PostForm(FlaskForm):
+    title = StringField('博客标题',validators=[DataRequired()])
     body = PageDownField("灵感来了写博客",validators=[DataRequired()])
     submit = SubmitField('提交')
 

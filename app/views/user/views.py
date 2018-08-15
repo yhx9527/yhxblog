@@ -209,3 +209,75 @@ def moderate_disable(id):
     db.session.add(comment)
     db.session.commit()
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
+
+#博客管理相关
+@user.route('/manage-post/write',methods=['GET','POST'])
+@login_required
+@permission_required(Permission.WRITE_ARTICLES)
+def write_post():
+    form = PostForm()
+    if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
+        if current_user.can(Permission.ADMINISTER):
+            post = Post(title=form.title.data, body=form.body.data,
+                        author=current_user._get_current_object(),if_check=True)
+            db.session.add(post)
+            db.session.commit()
+            flash('已存入工作区,等待发布')
+        else:
+            post = Post(title=form.title.data,body=form.body.data,
+                        author=current_user._get_current_object())
+            db.session.add(post)
+            db.session.commit()
+            flash('已提交管理员审核,审核通过，您即可发布')
+        return redirect(url_for('.write_post'))
+    return render_template('manage_post.html',form=form)
+
+@user.route('/manage-post/<username>')
+@login_required
+@permission_required(Permission.WRITE_ARTICLES)
+def manage_post(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    if user.can(Permission.ADMINISTER):
+        pagination = Post.query.all().order_by(Post.timestamp.desc()).paginate(page, per_page=
+        current_app.config[
+            'FLASKY_POSTS_PER_PAGE'], error_out=False)  # 里面有页数，文章等等等
+    else:
+        pagination = Post.query.filter_by(author_id=user.id).order_by(Post.timestamp.desc()).paginate(page, per_page=
+            current_app.config[
+                'FLASKY_POSTS_PER_PAGE'], error_out=False)  # 里面有页数，文章等等等
+    posts = pagination.items  # .items表示这一页的文章
+    # posts = user.posts.order_by(Post.timestamp.desc()).all()
+    return render_template('manage_post.html', user=user, posts=posts, pagination=pagination)
+
+@user.route('/manage-post/del/<int:id>',methods=['DELETE','GET'])
+@login_required
+@permission_required(Permission.WRITE_ARTICLES)
+def del_post(id):
+    post = Post.query.filter_by(id=id)
+    if current_user != post.author and \
+            not current_user.can(Permission.ADMINISTER):
+        abort(403)
+    db.session.delete(post)
+    db.session.commit()
+    flash('已删除文章')
+    return redirect(url_for('.manage_post',username=current_user.username))
+
+"""
+    @user.route('manage-post/edit/<int:id>',methods=['GET','POST'])
+def edit(id):
+    post = Post.query.get_or_404(id)
+    if current_user != post.author and \
+        not current_user.can(Permission.ADMINISTER):
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.body = form.body.data
+        db.session.add(post)
+        db.session.commit()
+        flash('文章已更新')
+        return redirect(url_for('.', id=post.id))
+    form.body.data = post.body
+    return render_template('edit_post.html',form=form)
+"""
