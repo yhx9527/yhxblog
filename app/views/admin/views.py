@@ -12,4 +12,4 @@ def manage_user():
     pagination = User.query.order_by(User.member_since.desc()).paginate(page,per_page=current_app.config['FLASKY_ADMIN_USERS_PER_PAGE'],
             error_out=False)
     users = pagination.items
-    return render_template('manage_user.html', users=users, pagination=pagination)
+    return render_template('admin/manage_user.html', users=users, pagination=pagination)

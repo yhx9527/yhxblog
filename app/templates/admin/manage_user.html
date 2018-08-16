@@ -3,6 +3,36 @@
 
 {% block content %}
 {{super()}}
-
-
+<h3 class="mt-5 font-italic border-bottom mb-4">用户管理</h3>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">username</th>
+            <th scope="col">email</th>
+            <th scope="col">join_date</th>
+            <th scope="col">posts</th>
+            <th scope="col">comments</th>
+            <th scope="col">operate</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <th scope="row">{{user.id}}</th>
+            <td><a href="{{url_for('user.usering',username=user.username)}}">{{user.username}}</a></td>
+            <td>{{user.email}}</td>
+            <td>{{moment(user.member_since).format('YYYY/M/D')}} </td>
+            <td>{{user.posts.count()}}</td>
+            <td>{{user.comments.count()}}</td>
+            <td><a href="{{ url_for('user.edit_profile_admin', id=user.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-cog"></i>设置</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+ {% if pagination %}
+        <nav class="mt-5" aria-label="Page navigation">
+        {{ macros.pagination_widget(pagination,'admin.manage_user') }}
+        </nav>
+        {% endif %}
 {% endblock %}
