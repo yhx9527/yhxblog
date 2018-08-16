@@ -13,6 +13,7 @@
         <a class="dropdown-item" href="{{url_for('user.moderate',sorttype='博客id')}}">博客id</a>
     </div>
 </div>
+{{super()}}
 {% set moderate = True %}
 {% include '_comments.html' %}
 {% endblock %}

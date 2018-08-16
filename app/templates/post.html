@@ -5,7 +5,14 @@
 <h3 class="mt-5 font-italic border-bottom mb-4">Reading~</h3>
  <div class="col-md-11 offset-md-1 mb-1">
             <div class="blog-post">
-                <h2 class="blog-post-title text-center">{{post.title}}</h2>
+                <div class="d-flex flex-row justify-content-center">
+                    <h2 class="blog-post-title">{{post.title}}</h2>
+                    <a href="{{url_for('user.collect',id=post.id)}}" class="ml-3 my-auto">
+                     {% if post in current_user.collects %}<i class="fas fa-star fa-lg" style="color:#f6e58d;"></i><span class="font-weight-bold">已收藏</span>
+                        {% else %}<i class="far fa-star fa-lg" style="color:#f6e58d;"></i><span class="font-weight-bold">收藏</span>{% endif %}
+
+                    </a>
+                </div>
                 <div class="d-flex flex-row justify-content-center">
                     <p class="blog-post-meta">{{ moment(post.timestamp).fromNow() }} by <a href="{{url_for('user.usering',username=post.author.username)}}">{{post.author.username}}</a></p>
                     <p class="ml-5"><a><i class="fas fa-glasses mr-1"></i>{{post.read}}</a></p>
@@ -19,6 +26,7 @@
             </div>
  </div>
 <!--评论-->
+
 {% include '_comments.html' %}
 
 {{super()}}

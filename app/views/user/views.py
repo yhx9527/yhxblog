@@ -10,6 +10,7 @@ from .forms import EditProfileForm,PostForm,CommentForm,EditProfileAdminForm
 from ...utils.decorators import admin_required,permission_required
 from flask_login import login_required,current_user
 from flask_sqlalchemy import get_debug_queries
+from datetime import datetime
 
 
 @user.route('/',methods=['GET','POST'])
@@ -22,12 +23,58 @@ def index():
     posts = pagination.items  # .items表示这一页的文章
     return render_template('index.html', posts=posts, pagination=pagination,page=page)
 
-
 @user.route('/user/<username>')
 def usering(username):
+    tab = request.args.get('tab', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html',user=user)
+    return render_template('user.html',user=user,tab=tab)
 
+@user.route('/collect/<int:id>')
+@login_required
+def collect(id):
+    post = Post.query.filter_by(id=id).first()
+    if post in current_user.collects:
+        current_user.collects.remove(post)
+    else:
+        current_user.collects.append(post)
+    db.session.add(current_user)
+    db.session.commit()
+    return redirect(url_for('user.post',id=post.id))
+
+#博客详情链接
+@user.route('/post/<int:id>',methods=['GET','POST'])
+def post(id):
+    post = Post.query.get_or_404(id)
+    form = CommentForm()
+    if request.referrer != request.url:
+        print(request.url==request.referrer)
+        post.read = post.read +1
+    db.session.add(post)
+    db.session.commit()
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data,
+                          post = post,
+                          author= current_user._get_current_object())
+        db.session.add(comment)
+        db.session.commit()
+        flash('你的评论已提交')
+        return redirect(url_for('.post', id=post.id)) #page=-1用于请求最后一页
+    page = request.args.get('page',1,type=int)
+    if page == -1:
+        page = (post.comments.count()-1) /\
+                current_app.config['FLASKY_COMMENTS_PER_PAGE'] +1
+
+    pagination = post.comments.order_by(Comment.timestamp.desc()).paginate(
+        page,per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],error_out=False
+    )
+    comments = pagination.items
+    return render_template('post.html',post=post,form=form,
+                           comments=comments,pagination=pagination)
+
+
+"""资料处理相关
+    包括个人资料的管理，管理员进行用户资料管理
+"""
 @user.route('/edit-profile',methods=['GET','POST'])
 @login_required
 def edit_profile():
@@ -43,8 +90,48 @@ def edit_profile():
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html',form=form,admin=False)
 
+@user.route('/edit-profile/<int:id>',methods=['GET','POST'])
+@login_required
+@admin_required
+def edit_profile_admin(id):
+    user = User.query.get_or_404(id)
+    form = EditProfileAdminForm(user)
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.username = form.username.data
+        user.confirmed = form.confirmed.data
+        user.role = Role.query.get(form.role.data)
+        user.name = form.name.data
+        user.location = form.location.data
+        user.about_me = form.about_me.data
+        db.session.add(user)
+        db.session.commit()
+        flash('所选用户的资料已被更新')
+        return redirect(url_for('user.usering',username = user.username))
+    form.email.data = user.email
+    form.username.data = user.username
+    form.confirmed.data = user.confirmed
+    form.role.data = user.role_id
+    form.name.data = user.name
+    form.location.data = user.location
+    form.about_me.data = user.about_me
+    return render_template('edit_profile.html',form=form,user=user,admin=True)
 
-#与关注相关的视图处理函数
+@user.route('/del-comment/<int:id>',methods=['DELETE','GET'])
+@login_required
+def del_comment(id):
+    comment = Comment.query.filter_by(id=id).first()
+    tab = request.args.get('tab',1,type=int)
+    if current_user.id == comment.author_id or current_user.can(Permission.MODERATE_COMMENTS):
+        db.session.delete(comment)
+        db.session.commit()
+        flash('该评论已删除')
+        return redirect(url_for('user.usering',username = current_user.username,tab=tab))
+
+
+"""与关注相关的视图处理函数
+    包括关注，取消关注，查看关注者与粉丝
+"""
 @user.route('/follow/<username>')
 @login_required
 @permission_required(Permission.FOLLOW)
@@ -55,7 +142,7 @@ def follow(username):
         return redirect(url_for('.index'))
     if current_user.is_following(user):
         flash('你已经关注了此用户了')
-        return redirect(url_for('.user',username=username))
+        return redirect(url_for('.usering',username=username))
     current_user.follow(user)
     flash('你成功关注了%s' %username)
     return redirect(url_for('.usering',username=username))
@@ -70,7 +157,7 @@ def unfollow(username):
         return redirect(url_for('.index'))
     if not user.is_followed_by(current_user):
         flash('你未关注了此用户了')
-        return redirect(url_for('.user',username=username))
+        return redirect(url_for('.usering',username=username))
     current_user.unfollow(user)
     flash('你成功取消关注%s' %username)
     return redirect(url_for('.usering',username=username))
@@ -105,64 +192,10 @@ def followed_by(username):
                            follows=follows)
 
 
-@user.route('/edit-profile/<int:id>',methods=['GET','POST'])
-@login_required
-@admin_required
-def edit_profile_admin(id):
-    user = User.query.get_or_404(id)
-    form = EditProfileAdminForm(user)
-    if form.validate_on_submit():
-        user.email = form.email.data
-        user.username = form.username.data
-        user.confirmed = form.confirmed.data
-        user.role = Role.query.get(form.role.data)
-        user.name = form.name.data
-        user.location = form.location.data
-        user.about_me = form.about_me.data
-        db.session.add(user)
-        db.session.commit()
-        flash('所选用户的资料已被更新')
-        return redirect(url_for('user.usering',username = user.username))
-    form.email.data = user.email
-    form.username.data = user.username
-    form.confirmed.data = user.confirmed
-    form.role.data = user.role_id
-    form.name.data = user.name
-    form.location.data = user.location
-    form.about_me.data = user.about_me
-    return render_template('edit_profile.html',form=form,user=user,admin=True)
+"""评论管理相关
+    包括评论的查看，封禁，解封，删除
 
-
-
-#博客详情链接
-@user.route('/post/<int:id>',methods=['GET','POST'])
-def post(id):
-    post = Post.query.get_or_404(id)
-    form = CommentForm()
-    post.read = post.read +1
-    db.session.add(post)
-    db.session.commit()
-    if form.validate_on_submit():
-        comment = Comment(body=form.body.data,
-                          post = post,
-                          author= current_user._get_current_object())
-        db.session.add(comment)
-        db.session.commit()
-        flash('你的评论已提交')
-        return redirect(url_for('.post', id=post.id)) #page=-1用于请求最后一页
-    page = request.args.get('page',1,type=int)
-    if page == -1:
-        page = (post.comments.count()-1) /\
-                current_app.config['FLASKY_COMMENTS_PER_PAGE'] +1
-
-    pagination = post.comments.order_by(Comment.timestamp.desc()).paginate(
-        page,per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],error_out=False
-    )
-    comments = pagination.items
-    return render_template('post.html',post=post,form=form,
-                           comments=comments,pagination=pagination)
-
-#评论管理
+"""
 @user.route('/moderate')
 @login_required
 @permission_required(Permission.MODERATE_COMMENTS)
@@ -189,7 +222,6 @@ def moderate():
     return render_template('moderate.html',comments=comments,pagination=pagination,sorttype=sorttype)
 
 
-
 @user.route('/moderate/enable/<int:id>')
 @login_required
 @permission_required(Permission.MODERATE_COMMENTS)
@@ -210,7 +242,21 @@ def moderate_disable(id):
     db.session.commit()
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
 
-#博客管理相关
+@user.route('/moderate/del/<int:id>')
+@login_required
+@permission_required(Permission.MODERATE_COMMENTS)
+def moderate_del(id):
+    comment = Comment.query.get_or_404(id)
+    db.session.delete(comment)
+    db.session.commit()
+    flash('该评论已删除')
+    return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
+
+
+"""博客管理相关
+    包括博客的撰写，删除，编辑，发布；
+    管理员审核博客
+"""
 @user.route('/manage-post/<username>',methods=['GET','POST'])
 @login_required
 @permission_required(Permission.WRITE_ARTICLES)
@@ -290,9 +336,11 @@ def check_post(id):
         flash('该文章已被下架')
     return redirect(url_for('.manage_post', username=current_user.username, tab=2))
 
-"""
-    @user.route('manage-post/edit/<int:id>',methods=['GET','POST'])
-def edit(id):
+
+@user.route('/edit/<int:id>',methods=['GET','POST'])
+@login_required
+@permission_required(Permission.WRITE_ARTICLES)
+def edit_post(id):
     post = Post.query.get_or_404(id)
     if current_user != post.author and \
         not current_user.can(Permission.ADMINISTER):
@@ -301,10 +349,12 @@ def edit(id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
+        post.timestamp = datetime.utcnow()
         db.session.add(post)
         db.session.commit()
         flash('文章已更新')
-        return redirect(url_for('.', id=post.id))
+        return redirect(url_for('user.manage_post', username=current_user.username,tab=2))
+    form.title.data = post.title
     form.body.data = post.body
     return render_template('edit_post.html',form=form)
-"""
+

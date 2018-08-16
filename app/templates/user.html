@@ -5,7 +5,7 @@
 {% block content %}
 {{super()}}
 <div class="d-flex mt-5 h-25 flex-row">
-    <img class="rounded" src="{{ user.gravatar(size=256) }}" alt="头像">
+    <img class="rounded img-fluid" src="{{ user.gravatar(size=256) }}" alt="头像">
 <div class="ml-5">
     <div class="row">
     <h1>{{user.username}}</h1>
@@ -51,19 +51,65 @@
 </div>
 <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">收藏文章</a>
+    <a class="nav-link {% if tab==1 %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+       aria-selected="{% if tab==1 %}true{% else %}false{% endif %}">收藏文章</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">关注的人</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">历史评论</a>
+    <a class="nav-link {% if tab==2 %}active{% endif %}" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+       aria-selected="{% if tab==2 %}true{% else %}false{% endif %}">历史评论</a>
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">home</div>
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">profile</div>
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact</div>
+  <div class="tab-pane fade {% if tab ==1 %}show active{% endif %}" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <table class="table mt-5 table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">post_id</th>
+                    <th scope="col">post_title</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for collect in user.collects %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td><a href="{{url_for('user.post',id=collect.id)}}" >{{collect.id}}</a></td>
+                    <td>{{collect.title}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+  </div>
+  <div class="tab-pane fade {% if tab ==2 %}show active{% endif %}" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+        <table class="table mt-5 table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">blog_id</th>
+                    <th scope="col">content</th>
+                    <th scope="col">date</th>
+                    <th scope="col">like</th>
+                    {% if user.id == current_user.id or current_user.can(Permission.MODERATE_COMMENTS) %}
+                    <th scope="col">del</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for comment in user.comments %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td><a href="{{url_for('user.post',id=comment.post_id)}}"> {{comment.post_id}}</a></td>
+                    <td>{{comment.body_html | safe}}</td>
+                    <td>{{moment(comment.timestamp).format('YYYY/M/D')}}</td>
+                    <td>点赞数</td>
+                    {% if user.id == current_user.id or current_user.can(Permission.MODERATE_COMMENTS) %}
+                    <td><a href="{{url_for('user.del_comment',id=comment.id,tab=2)}}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i>删除</a></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+  </div>
 </div>
 
 {% endblock %}

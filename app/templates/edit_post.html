@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mt-5 font-italic border-bottom mb-4">文章编辑</h3>
+<form method="post" action>
+    {{form.hidden_tag()}}
+    <div class="form-group">
+        {{form.title.label()}}
+        {{form.title(class='form-control')}}
+    </div>
+    <div class="form-group">
+        {{form.body.label()}}
+        <div class="d-flex flex-column align-content-between">
+            {{form.body(class='form-control mb-2 blogtext')}}
+        </div>
+    </div>
+    {{form.submit(class='btn btn-primary')}}
+</form>
+{% endblock %}
+ {% block jsfile %}
+    {{ super() }}
+    {{pagedown.include_pagedown()}}
+ {% endblock %}

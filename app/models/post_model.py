@@ -6,6 +6,10 @@ from markdown import markdown
 from ..utils.exceptions import ValidationError
 from .comment_model import Comment
 
+collect = db.Table('collect',
+                   db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
+                   db.Column('post_id',db.Integer,db.ForeignKey('posts.id'))
+                   )
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -14,7 +18,6 @@ class Post(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime,index=True,default=datetime.utcnow)
     body_html = db.Column(db.Text)
-    love = db.Column(db.Integer,default=1)
     if_post = db.Column(db.Boolean,default=False)
     if_check = db.Column(db.Boolean,default=False)
     read = db.Column(db.Integer,default = 1)
@@ -22,6 +25,7 @@ class Post(db.Model):
 
     comments = db.relationship('Comment',backref='post',lazy='dynamic')
 
+    fans = db.relationship('User',secondary=collect,backref=db.backref('collects',lazy='dynamic'),lazy='dynamic')
 
 
     @staticmethod
@@ -39,6 +43,11 @@ class Post(db.Model):
             db.session.delete(comment)
         db.session.delete(post)
         db.session.commit()
+
+    # 刷新文章编辑时间
+    def ping(self):
+        self.timestamp = datetime.utcnow()
+        db.session.add(self)
 
     #将文章转换成json格式的序列化字典
     def to_json(self):

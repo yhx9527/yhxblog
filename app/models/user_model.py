@@ -76,6 +76,10 @@ class User(UserMixin,db.Model):
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
 
+    #检查是否是副管理员
+    def is_moderater(self):
+        return self.can(Permission.MODERATE_COMMENTS)
+
     #向数据库中没有权限的赋予默认权限
     @staticmethod
     def set_default_authority():
@@ -174,7 +178,7 @@ class User(UserMixin,db.Model):
             return None
         return User.query.get(data['id'])
 
-
+    #刷新用户访问时间
     def ping(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
@@ -267,3 +271,4 @@ login_manager.anonymous_user = AnonymoousUser
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
