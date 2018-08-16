@@ -46,20 +46,20 @@
           {% if posts %}
           <tbody>
             {% for post in posts%}
-            <tr>
-                <th scope="row">{{post.id}}</th>
+            <tr class="{% if post.author_id != current_user.id %} table-warning {% endif %}">
+                <th scope="row"><a href="{{url_for('user.post',id=post.id)}}">{{post.id}}</a></th>
                 <td>{{post.title}}</td>
                 <td>{{post.read}}</td>
                 <td>{{post.comments.count()}}</td>
                 <td><a class="btn btn-danger btn-sm" href="{{url_for('user.del_post',id=post.id)}}"><i class="fas fa-trash"></i>删除</a></td>
                 <td><a class="btn btn-warning btn-sm" href="{{url_for('user.del_post',id=post.id)}}"><i class="fas fa-feather-alt"></i>编辑</a></td>
-                {% if post.id == user.id %}
+                {% if post.author_id == current_user.id %}
                 <td><a class="btn {% if post.if_post %}btn-secondary{%else%}btn-primary{% endif %} btn-sm" href="{{url_for('user.issue_post',id=post.id)}}">
                     {% if post.if_post %}
                     <i class="fas fa-paper-plane fa-rotate-180"></i>收回
                     {% else %}<i class="fas fa-paper-plane"></i>发布{% endif %}</a></td>
                 {% else %}
-                    {% if user.can(Permission.ADMINISTER) %}
+                    {% if current_user.can(Permission.ADMINISTER) %}
                      <td><a class="btn {% if post.if_check %}btn-secondary{%else%}btn-primary{% endif %} btn-sm" href="{{url_for('user.check_post',id=post.id)}}">
                     {% if post.if_check %}
                     <i class="fas fa-times-circle"></i>下架

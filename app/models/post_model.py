@@ -4,6 +4,7 @@ from datetime import datetime
 import bleach
 from markdown import markdown
 from ..utils.exceptions import ValidationError
+from .comment_model import Comment
 
 
 class Post(db.Model):
@@ -30,6 +31,14 @@ class Post(db.Model):
             markdown(value,output_format='html'),
             tags=allowed_tags,strip=True
         ))
+
+
+    @staticmethod
+    def delete_post(post):
+        for comment in post.comments:
+            db.session.delete(comment)
+        db.session.delete(post)
+        db.session.commit()
 
     #将文章转换成json格式的序列化字典
     def to_json(self):

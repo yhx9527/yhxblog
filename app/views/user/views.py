@@ -255,8 +255,7 @@ def del_post(id):
     if current_user.id != post.author_id and \
             not current_user.can(Permission.ADMINISTER):
         abort(403)
-    db.session.delete(post)
-    db.session.commit()
+    Post.delete_post(post)
     flash('已删除文章')
     return redirect(url_for('.manage_post',username=current_user.username,tab=2))
 
