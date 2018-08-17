@@ -9,7 +9,7 @@
 <div class="ml-5">
     <div class="row">
     <h1>{{user.username}}</h1>
-      <div class="ml-3 mt-1">
+      <!--div class="ml-3 mt-1">
     {% if current_user.can(Permission.FOLLOW) and user !=current_user %}
         {% if not current_user.is_following(user) %}
         <a href="{{ url_for('.follow',username = user.username) }}" class="btn btn-outline-primary btn-sm mr-2">关注</a>
@@ -17,12 +17,12 @@
         <a href="{{ url_for('.unfollow',username = user.username) }}" class="btn btn-outline-warning btn-sm mr-2">取关</a>
         {% endif %}
     {% endif %}
-      </div>
+      </div-->
     </div>
-    <div style="margin-top: -10px;">
+    <!--div style="margin-top: -10px;">
     <a href="{{ url_for('.followers',username=user.username) }}" class="text-warning">Fans:<span class="badge badge-light">{{user.followers.count()}}</span></a>
     <a href="{{ url_for('.followed_by',username=user.username) }}" class="text-info ml-1">Follows:<span class="badge badge-light">{{user.followed.count()}}</span></a>
-    </div>
+    </div-->
     <a href="Email:{{ user.email }}"><span class="badge badge-pill badge-light mr-0">邮箱</span> {{ user.email }}</a><br>
     {% if user.location %}
     <a href="http://maps.google.com/?q={{ user.location }}">

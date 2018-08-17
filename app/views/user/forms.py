@@ -47,3 +47,8 @@ class PostForm(FlaskForm):
 class CommentForm(FlaskForm):
     body = StringField('发表你的评论',validators=[DataRequired()])
     submit = SubmitField('提交')
+
+#回复表单
+class ReplyForm(FlaskForm):
+    body = StringField('回复ta',validators=[DataRequired()])
+    submit = SubmitField('发送')

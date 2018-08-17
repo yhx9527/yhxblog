@@ -20,13 +20,11 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles={
-            'User':(Permission.FOLLOW |
+            'Dumb':(Permission.FOLLOW |
+                    Permission.COLLECT,False),
+            'User': (Permission.FOLLOW |
                     Permission.COMMENT |
-                    Permission.COLLECT,True),
-            'VIP': (Permission.FOLLOW |
-                    Permission.COMMENT |
-                    Permission.COLLECT |
-                    Permission.WRITE_ARTICLES,False),
+                    Permission.COLLECT ,True),
             'Moderator':(Permission.FOLLOW |
                          Permission.COMMENT |
                          Permission.WRITE_ARTICLES |

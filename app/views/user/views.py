@@ -6,7 +6,7 @@ from ...models.post_model import Post
 from ...models.comment_model import Comment
 #from ..email import send_email
 from . import user
-from .forms import EditProfileForm,PostForm,CommentForm,EditProfileAdminForm
+from .forms import EditProfileForm,PostForm,CommentForm,EditProfileAdminForm,ReplyForm
 from ...utils.decorators import admin_required,permission_required
 from flask_login import login_required,current_user
 from flask_sqlalchemy import get_debug_queries
@@ -71,6 +71,22 @@ def post(id):
     return render_template('post.html',post=post,form=form,
                            comments=comments,pagination=pagination)
 
+#关于评论回复
+@user.route('/comment-reply/<int:postid>/<int:commentid>')
+@login_required
+@permission_required(Permission.COMMENT)
+def reply(postid,commentid):
+    post = Comment.query.filter_by(id=postid)
+    commented = Comment.query.filter_by(id=commentid)
+    form = ReplyForm()
+    if form.validate_on_submit():
+        commenting = Comment(body=form.body.data,
+                          post=post,
+                          author=current_user._get_current_object())
+        db.session.add(commenting)
+        commenting.reply(commented)
+        db.session.commit()
+        return redirect(url_for('user.post',id=postid))
 
 """资料处理相关
     包括个人资料的管理，管理员进行用户资料管理
@@ -251,6 +267,9 @@ def moderate_del(id):
     db.session.commit()
     flash('该评论已删除')
     return redirect(url_for('.moderate', page=request.args.get('page', 1, type=int)))
+
+
+
 
 
 """博客管理相关
