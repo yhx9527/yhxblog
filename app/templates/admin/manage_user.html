@@ -10,6 +10,7 @@
             <th scope="col">#</th>
             <th scope="col">username</th>
             <th scope="col">email</th>
+            <th scope="col">confirmed</th>
             <th scope="col">join_date</th>
             <th scope="col">posts</th>
             <th scope="col">comments</th>
@@ -22,6 +23,7 @@
             <th scope="row">{{loop.index}}</th>
             <td><a href="{{url_for('user.usering',username=user.username)}}">{{user.username}}</a></td>
             <td>{{user.email}}</td>
+            <td>{{user.confirmed}}</td>
             <td>{{moment(user.member_since).format('YYYY/M/D')}} </td>
             <td>{{user.posts.count()}}</td>
             <td>{{user.comments.count()}}</td>

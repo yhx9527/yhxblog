@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="mt-5 font-italic border-bottom mb-4">评论回复</h3>
+<form method="post" action>
+    {{form.hidden_tag()}}
+    <div class="form-group">
+        {{form.body.label()}}
+        <div class="input-group mb-2">
+            {{form.body(class='form-control')}}
+            <div class="input-group-append">
+                <span class="input-group-text">@{{commented.author.username}}</span>
+            </div>
+        </div>
+    </div>
+    {{form.submit(class='btn btn-primary')}}
+</form>
+{% endblock %}

@@ -5,13 +5,6 @@ from markdown import markdown
 from ..utils.exceptions import ValidationError
 
 
-class Reply(db.Model):
-    __tablename__ = 'replys'
-    replying_id = db.Column(db.Integer, db.ForeignKey('comment.id'), primary_key=True)
-    replyed_id = db.Column(db.Integer,db.ForeignKey('comment.id'),primary_key=True)
-
-    timestamp = db.Column(db.DateTime,default=datetime.utcnow)
-
 #评论的模型
 class Comment(db.Model):
     __table__name = 'comment'
@@ -20,19 +13,10 @@ class Comment(db.Model):
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime,index=True,default=datetime.utcnow)
     disabled = db.Column(db.Boolean)
+    like = db.Column(db.Integer,default=1)
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
-    post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
-
-    replying = db.relationship('Reply',
-                               foreign_keys=[Reply.replyed_id],
-                               backref=db.backref('replyed', lazy='joined'),
-                               lazy='dynamic',
-                               cascade='all, delete-orphan')
-    replyed = db.relationship('Reply',
-                              foreign_keys=[Reply.replying_id],
-                              backref = db.backref('replying',lazy='joined'),
-                              lazy = 'dynamic',
-                              cascade='all, delete-orphan')
+    target_username = db.Column(db.String(64),index=True)
+    ost_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
 
 
 
@@ -48,9 +32,6 @@ class Comment(db.Model):
             raise ValidationError("评论不能为空")
         return Comment(body=body)
 
-    def reply(self,comment):
-        r = Reply(replyed=comment,replying=self)
-        db.session.add(r)
 
 
 

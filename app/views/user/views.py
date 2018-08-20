@@ -27,7 +27,8 @@ def index():
 def usering(username):
     tab = request.args.get('tab', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html',user=user,tab=tab)
+    replys = Comment.query.filter_by(target_username = user.username)
+    return render_template('user.html',user=user,replys=replys,tab=tab)
 
 @user.route('/collect/<int:id>')
 @login_required
@@ -72,21 +73,30 @@ def post(id):
                            comments=comments,pagination=pagination)
 
 #关于评论回复
-@user.route('/comment-reply/<int:postid>/<int:commentid>')
+@user.route('/reply-comment/<int:commentid>',methods=['GET','POST'])
 @login_required
 @permission_required(Permission.COMMENT)
-def reply(postid,commentid):
-    post = Comment.query.filter_by(id=postid)
-    commented = Comment.query.filter_by(id=commentid)
+def reply(commentid):
+    commented = Comment.query.filter_by(id=commentid).first()
     form = ReplyForm()
     if form.validate_on_submit():
-        commenting = Comment(body=form.body.data,
-                          post=post,
+        commenting = Comment(target_username=commented.author.username,
+                             body=form.body.data,
+                          post=commented.post,
                           author=current_user._get_current_object())
         db.session.add(commenting)
-        commenting.reply(commented)
         db.session.commit()
-        return redirect(url_for('user.post',id=postid))
+        return redirect(url_for('user.post',id=commented.post.id))
+    return render_template('comment_reply.html',form=form,commented=commented)
+
+#关于评论点赞
+@user.route('/like-comment/<int:commentid>')
+def like_comment(commentid):
+    comment = Comment.query.filter_by(id=commentid).first()
+    comment.like = comment.like+1
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('user.post',id=comment.post.id))
 
 """资料处理相关
     包括个人资料的管理，管理员进行用户资料管理

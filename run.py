@@ -3,7 +3,7 @@ from app import create_app,db
 from app.models.role_model import Role,Permission
 from app.models.user_model import User,Follow
 from app.models.post_model import Post
-from app.models.comment_model import Reply,Comment
+from app.models.comment_model import Comment
 
 from flask_script import Manager,Shell
 from flask_migrate import Migrate,MigrateCommand
@@ -21,7 +21,7 @@ if os.environ.get('FLASKY_COVERAGE'):
 
 
 def make_shell_context():
-    return dict(app=app,db=db,User=User,Role=Role,Permission=Permission,Post=Post,Follow=Follow,Comment=Comment,Reply=Reply)
+    return dict(app=app,db=db,User=User,Role=Role,Permission=Permission,Post=Post,Follow=Follow,Comment=Comment)
 #manager.add_command("shell",Shell(make_context=make_shell_context()))
 manager.add_command('db',MigrateCommand)
 

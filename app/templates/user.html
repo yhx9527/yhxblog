@@ -58,6 +58,12 @@
     <a class="nav-link {% if tab==2 %}active{% endif %}" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
        aria-selected="{% if tab==2 %}true{% else %}false{% endif %}">历史评论</a>
   </li>
+    {% if user.id == current_user.id or current_user.can(Permission.MODERATE_COMMENTS) %}
+    <li class="nav-item">
+    <a class="nav-link {% if tab==3 %}active{% endif %}" id="reply-tab" data-toggle="tab" href="#reply" role="tab" aria-controls="reply"
+       aria-selected="{% if tab==3 %}true{% else %}false{% endif %}">有人回复</a>
+  </li>
+    {% endif %}
 </ul>
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade {% if tab ==1 %}show active{% endif %}" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -98,10 +104,10 @@
                 {% for comment in user.comments %}
                 <tr>
                     <th scope="row">{{loop.index}}</th>
-                    <td><a href="{{url_for('user.post',id=comment.post_id)}}"> {{comment.post_id}}</a></td>
+                    <td><a href="{{url_for('user.post',id=comment.post.id)}}"> {{comment.post.id}}</a></td>
                     <td>{{comment.body_html | safe}}</td>
                     <td>{{moment(comment.timestamp).format('YYYY/M/D')}}</td>
-                    <td>点赞数</td>
+                    <td>{{comment.like}}</td>
                     {% if user.id == current_user.id or current_user.can(Permission.MODERATE_COMMENTS) %}
                     <td><a href="{{url_for('user.del_comment',id=comment.id,tab=2)}}" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i>删除</a></td>
                     {% endif %}
@@ -110,6 +116,34 @@
             </tbody>
         </table>
   </div>
+      {% if user.id == current_user.id or current_user.can(Permission.MODERATE_COMMENTS) %}
+     <div class="tab-pane fade {% if tab ==3 %}show active{% endif %}" id="reply" role="tabpanel" aria-labelledby="reply-tab">
+        <table class="table mt-5 table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">blog_id</th>
+                    <th scope="col">replyer</th>
+                    <th scope="col">content</th>
+                    <th scope="col">date</th>
+                    <th scope="col">like</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reply in replys %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td><a href="{{url_for('user.post',id=reply.post.id)}}"> {{reply.post.id}}</a></td>
+                    <td><a href="{{url_for('user.usering',username=reply.author.username)}}"> {{reply.author.username}}</a></td>
+                    <td>{{reply.body_html | safe}}</td>
+                    <td>{{moment(reply.timestamp).format('YYYY/M/D')}}</td>
+                    <td>{{comment.like}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+  </div>
+    {% endif %}
 </div>
 
 {% endblock %}
