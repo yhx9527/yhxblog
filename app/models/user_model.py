@@ -140,7 +140,7 @@ class User(UserMixin,db.Model):
         if user is None:
             return False
         user.password = new_password
-        db.session.add(User)
+        db.session.add(user)
         return True
 
     def generate_email_change_token(self,new_email,expiration=3600):

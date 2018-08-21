@@ -105,8 +105,8 @@ def password_reset_request():
         if user:
             token = user.generate_reset_token()
             send_email(user.email,'重设你的密码','auth/email/reset_password',user=user,token=token)
-        flash('一封邮件已发往您的邮箱中')
-        return redirect('auth.login')
+        flash('关于重设密码的一封邮件已发往您的邮箱中')
+        return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html',form=form)
 
 @auth.route('/reset/<token>',methods=['GET','POST'])
@@ -120,6 +120,7 @@ def password_reset(token):
             flash('你的密码已经更改')
             return redirect(url_for('auth.login'))
         else:
+            flash('无效用户')
             return redirect(url_for('main.index'))
     return render_template('auth/reset_password.html',form = form)
 
