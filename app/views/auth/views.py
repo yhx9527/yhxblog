@@ -44,12 +44,12 @@ def register():
 @login_required
 def confirm(token):
     if current_user.confirmed:
-        return redirect(url_for('mail.index'))
+        return redirect(url_for('user.index'))
     if current_user.confirm(token):
         flash('You have confirmed your account.Thanks!')
     else:
         flash('The confirmation link is invalid or has expired')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('user.index'))
 
 @auth.before_app_request
 def before_request():
@@ -64,7 +64,9 @@ def before_request():
 @auth.route('/unconfirmed')
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('user.index'))
+    token = current_user.generate_confirmation_token()
+    send_email(current_user.email, '请确认你的账户', 'auth/email/confirm', user=current_user, token=token)
     return render_template('auth/unconfirmed.html')
 
 @auth.route('/resend_confirmation')
@@ -73,7 +75,7 @@ def resend_confirmation():
     token = current_user.generate_confirmation_token()
     send_email(current_user.email,'请确认你的账户','auth/email/confirm',user=current_user,token=token)
     flash('一封确认邮件已发送到你的邮箱中')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('auth.unconfirmed'))
 
 @auth.route('/change_password',methods=['GET','POST'])
 @login_required
@@ -121,30 +123,6 @@ def password_reset(token):
             return redirect(url_for('main.index'))
     return render_template('auth/reset_password.html',form = form)
 
-@auth.route('/change_email',methods=['GET','POST'])
-def change_email_request():
-    form = ChangeEmailForm()
-    if form.validate_on_submit():
-        if current_user.vertify_password(form.password.data):
-            new_email = form.email.data
-            token = current_user.generate_email_change_token(new_email)
-            send_email(new_email,'确认邮件地址','auth/email/change_email',user=current_user,token=token)
-            flash('确认邮件地址的邮件已发往你的邮箱')
-            return redirect(url_for('main.index'))
-        else:
-            flash('密码错误')
-    return render_template('auth/change_email.html',form=form)
-
-@auth.route('/change_email/<token>')
-@login_required
-def change_email(token):
-    if current_user.change_email(token):
-        db.session.commit()
-        flash('你的邮箱地址已更改')
-    else:
-        flash('无效请求')
-    return redirect(url_for('main.index'))
-
 @auth.route('/change_email_no',methods=['GET','POST'])
 @login_required
 def change_email_no():
@@ -155,10 +133,11 @@ def change_email_no():
         else:
             if current_user.vertify_password(form.password.data):
                 current_user.email=form.email.data
+                current_user.confirmed = False
                 db.session.add(current_user)
                 db.session.commit()
                 flash('Change Email Success!')
-                return redirect(url_for('user.index'))
+                return redirect(url_for('auth.unconfirmed'))
             else:
                 flash('Wrong Password')
     return render_template('auth/change_email_no.html', form=form)

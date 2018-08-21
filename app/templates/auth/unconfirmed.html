@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{super()}}
+<div class="jumbotron mt-5">
+    <h1 class="display-4">邮箱认证</h1>
+    <p class="lead">你的邮箱还未验证，已发送一封邮件至你的邮箱，请您及时到邮箱进行确认，认证之后你将可以收藏文章，回复评论...</p>
+    <hr class="my-4">
+    <p>如果你未收到邮件，可点击下面按钮进行重发；<span class="text-danger">如再次未收到,请检查您的邮箱是否真实存在！</span></p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg" href="{{url_for('auth.resend_confirmation')}}" role="button">重发邮件</a>
+    </p>
+</div>
+{% endblock %}
