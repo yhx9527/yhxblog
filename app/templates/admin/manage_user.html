@@ -4,6 +4,7 @@
 {% block content %}
 {{super()}}
 <h3 class="mt-5 font-italic border-bottom mb-4">用户管理</h3>
+<div class="table-responsive">
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -27,11 +28,12 @@
             <td>{{moment(user.member_since).format('YYYY/M/D')}} </td>
             <td>{{user.posts.count()}}</td>
             <td>{{user.comments.count()}}</td>
-            <td><a href="{{ url_for('user.edit_profile_admin', id=user.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-cog"></i>设置</a></td>
+            <td><a href="{{url_for('user.edit_profile_admin', id=user.id)}}" class="btn btn-primary btn-sm"><i class="fas fa-cog"></i>设置</a></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
  {% if pagination %}
         <nav class="mt-5" aria-label="Page navigation">
         {{ macros.pagination_widget(pagination,'admin.manage_user') }}

@@ -120,8 +120,8 @@ def password_reset(token):
             flash('你的密码已经更改')
             return redirect(url_for('auth.login'))
         else:
-            flash('无效用户')
-            return redirect(url_for('main.index'))
+            flash('操作失败')
+            return redirect(url_for('user.index'))
     return render_template('auth/reset_password.html',form = form)
 
 @auth.route('/change_email_no',methods=['GET','POST'])

@@ -12,7 +12,7 @@
 <form class="form-signin" method="post" action="" role="form">
     {{form.hidden_tag()}}
       <div class="form-label-group">
-        <input type="email" id="email" name='email'class="form-control" placeholder="New Email" required autofocus>
+        <input type="email" id="email" name='email'class="form-control {% if form.email.errors %} is-invalid {% endif %}" placeholder="New Email" required autofocus>
         <label for="email">New Email</label>
           {% if form.email.errors %}
                   {% for error in form.email.errors %}

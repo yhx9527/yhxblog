@@ -1,11 +1,12 @@
+<div class="container">
 {% if page==1 %}
-    <div class="jumbotron bg-white border-bottom pt-4"style="height: 15%;">
+    <div class="jumbotron bg-white border-bottom pt-4"style="height: 10%;">
         <h1 class="display-5">Hello {% if current_user.is_authenticated %}{{current_user.username}}{%else%}Stranger{% endif %}!</h1>
-        <p class="lead">Welcome to my blog!I will record my study notes,thinking of life and so on...Hope you like it!</p>
+        <p class="lead">Welcome to my blog!</p>
     </div>
       <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
         <div class="col-md-12 px-0">
-            <h3 class="font-italic" style="margin-top: -2rem;margin-left: -2rem;">--lasted--</h3>
+            <h3 class="font-italic" style="margin-left: -1rem;">--lasted--</h3>
           <h1 class="display-4 font-italic text-nowrap">{% if posts %}{{posts[0].title}}{% endif %}</h1>
             {% if posts %}
             <div class="lead my-1 row">
@@ -42,3 +43,4 @@
         </div>
         {% endfor %}
     </div>
+</div>

@@ -4,8 +4,8 @@
 
 {% block content %}
 {{super()}}
-<div class="d-flex mt-5 h-25 flex-row">
-    <img class="rounded img-fluid" src="{{ user.gravatar(size=256) }}" alt="头像">
+<div class="container-fluid d-flex mt-5 flex-row">
+    <img class="rounded img-fluid" src="{{ user.gravatar(size=196) }}" alt="头像">
 <div class="ml-5">
     <div class="row">
     <h1>{{user.username}}</h1>
@@ -49,7 +49,7 @@
 
 </div>
 </div>
-<ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
+<ul class="container nav nav-tabs mt-5" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link {% if tab==1 %}active{% endif %}" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
        aria-selected="{% if tab==1 %}true{% else %}false{% endif %}">收藏文章</a>
@@ -65,9 +65,9 @@
   </li>
     {% endif %}
 </ul>
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade {% if tab ==1 %}show active{% endif %}" id="home" role="tabpanel" aria-labelledby="home-tab">
-        <table class="table mt-5 table-bordered">
+<div class="container tab-content" id="myTabContent">
+  <div class="tab-pane fade {% if tab ==1 %}show active{% endif %} table-responsive" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <table class="table mt-5 table-bordered ">
             <thead class="thead-light">
                 <tr>
                     <th scope="col">#</th>
@@ -86,7 +86,7 @@
             </tbody>
         </table>
   </div>
-  <div class="tab-pane fade {% if tab ==2 %}show active{% endif %}" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+  <div class="tab-pane fade {% if tab ==2 %}show active{% endif %} table-responsive" id="contact" role="tabpanel" aria-labelledby="contact-tab">
         <table class="table mt-5 table-bordered">
             <thead class="thead-light">
                 <tr>
@@ -117,7 +117,7 @@
         </table>
   </div>
       {% if user.id == current_user.id or current_user.can(Permission.MODERATE_COMMENTS) %}
-     <div class="tab-pane fade {% if tab ==3 %}show active{% endif %}" id="reply" role="tabpanel" aria-labelledby="reply-tab">
+     <div class="tab-pane fade {% if tab ==3 %}show active{% endif %} table-responsive" id="reply" role="tabpanel" aria-labelledby="reply-tab">
         <table class="table mt-5 table-bordered">
             <thead class="thead-light">
                 <tr>
@@ -137,7 +137,7 @@
                     <td><a href="{{url_for('user.usering',username=reply.author.username)}}"> {{reply.author.username}}</a></td>
                     <td>{{reply.body_html | safe}}</td>
                     <td>{{moment(reply.timestamp).format('YYYY/M/D')}}</td>
-                    <td>{{comment.like}}</td>
+                    <td>{% if comment %}{{comment.like}}{% else %}0{% endif %}</td>
                 </tr>
                 {% endfor %}
             </tbody>

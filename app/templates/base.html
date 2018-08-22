@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,11 +14,11 @@
     <link href="{{url_for('static',filename='css/style.css')}}" rel="stylesheet">
     {% endblock %}
 </head>
-<body class="h-100">
-    <header>
-    <nav class="navbar navbar-expand-md bg-white border-bottom box-shadow">
+<body>
+    <header style="min-height: 100%;">
+    <nav class="navbar navbar-dark navbar-expand-md bg-white border-bottom box-shadow">
       <a class=" mb-0 font-weight-bold h2" href="{{url_for('user.index')}}">YHX-BLOG</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsSum" aria-controls="navbarsSum" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsSum" aria-controls="navbarsSum" aria-expanded="false" aria-label="Toggle navigation" style="background-color: #DCDDE6;">
         <span class="navbar-toggler-icon "></span>
       </button>
 
@@ -64,28 +64,27 @@
               </ul>
       </div>
     </nav>
-    </header>
-        <main role="main" class="no-gutters h-100" style="overflow-x: hidden">
-        <div class="row h-100 ">
-            <div class="col-sm-2 col-md-2 d-flex align-items-center justify-content-start">
-                <div class="accordion card d-flex flex-md-row h-50 box-shadow-card" id="accordion">
-                    <div id="collapseOne" class="collapse show my-auto" aria-labelledby="headingOne" data-parent="#accordion">
+
+        <main role="main" class="no-gutters " style="overflow: hidden;padding-bottom: 100px;">
+        <div class="row">
+            <div class="col-md-2 d-flex align-items-start justify-content-start">
+                <div class="accordion card d-flex flex-md-row flex-sm-column flex-column box-shadow-card" style="margin-top: 6rem;" id="accordion">
+                    <div id="collapseOne" class="collapse show my-auto pb-5" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body text-center"   style=" margin-top: -6rem;">
-                            <img class="rounded-circle mb-4" style="height: 70px;width: 70px;" alt="头像" src="../static/img/bloger.jpg">
+                            <img class="rounded-circle mb-4 " style="height: 70px;width: 70px;" alt="头像" src="../static/img/bloger.jpg">
                             <h5 class="card-title">雨含香</h5>
                             <h6 class="card-subtitle text-muted mb-2">--A rookie newbie on the Way</h6>
-                            <p class="card-text">脚踏实地真好</p>
+                            <p class="card-text">Down To Earth And Take Pains</p>
                             <a href="https://github.com/yhx9527" class="card-link"> <i class="fab fa-github"></i>github</a>
-                            <a href=""class="card-link"><i class="fas fa-at"></i>gmail</a>
+                            <a href="#" class="card-link" data-toggle="tooltip" title="yhx.9527.lsc@gmail.com" data-placement="top"><i class="fas fa-at"></i>gmail</a>
                         </div>
                     </div>
-                    <button class="btn btn-outline-secondary"style="border-radius: 0px;" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"aria-controls="collapseOne">
-                        <p class="w-25"style="writing-mode: vertical-rl;">了解一下博主</p>
+                    <button class="btn btn-outline-secondary d-flex flex-column justify-content-center align-items-center"style="border-radius: 0px;" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"aria-controls="collapseOne">
+                       <i class="fab fa-angellist fa-lg"></i>博主
                     </button>
-
                 </div>
             </div>
-            <div class="col-10 col-sm-6 col-md-6 offset-sm-1 offset-md-1">
+            <div class="col-11 col-sm-10 col-md-6 offset-1 offset-sm-1 offset-md-1">
                 {% block content %}
                  {% for message in get_flashed_messages() %}
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -117,11 +116,12 @@
 
 
             </div>
-            <div class="col-2 col-sm-3 col-md-3">
+            <div class="col-md-3">
 
             </div>
         </div>
         </main>
+         </header>
     <!--footer class=" footer ">
         <div class="container mx-auto">
           <p style="text-align: center;">Copyright @2018 YHX-BLOG by<a href="https://github.com/yhx9527">雨含香</a></p>

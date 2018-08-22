@@ -239,7 +239,7 @@ def moderate():
             error_out=False
         )
     elif(sorttype == '博客id'):
-        pagination = Comment.query.order_by(Comment.post_id.desc()).paginate(
+        pagination = Comment.query.order_by(Comment.ost_id.desc()).paginate(
             page, per_page=current_app.config['FLASKY_ADMIN_COMMENTS_PER_PAGE'],
             error_out=False
         )
