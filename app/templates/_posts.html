@@ -1,6 +1,6 @@
 <div class="container">
 {% if page==1 %}
-    <div class="jumbotron bg-white border-bottom pt-4"style="height: 10%;">
+    <div class="jumbotron bg-white border-bottom pt-4"style="padding-bottom: 1rem;">
         <h1 class="display-5">Hello {% if current_user.is_authenticated %}{{current_user.username}}{%else%}Stranger{% endif %}!</h1>
         <p class="lead">Welcome to my blog!</p>
     </div>

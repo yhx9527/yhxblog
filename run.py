@@ -70,6 +70,7 @@ def createdb():
 @manager.command
 def deploy():
     from flask_migrate import migrate,upgrade
+    from app.models.user_model import User
     from app.models.role_model import Role
 
     #将数据库迁移到最新修订版本
