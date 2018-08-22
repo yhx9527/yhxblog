@@ -52,7 +52,7 @@ class ProductionConfig(Config):
 
     @classmethod
     def init_app(cls,app):
-        Config.init_app()
+        Config.init_app(app)
 
         #将错误通过电子邮件发送给管理员
         import logging
