@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="014a717f-a12a-487e-b7ff-54121a655b21" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/templates/404.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/templates/500.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/user/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/errors.py" afterDir="false" />
-    </list>
+    <list default="true" id="014a717f-a12a-487e-b7ff-54121a655b21" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -300,6 +295,17 @@
             <path>
               <item name="yhxblog" type="b2602c69:ProjectViewProjectNode" />
               <item name="yhxblog" type="462c0819:PsiDirectoryNode" />
+              <item name="migrations" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="yhxblog" type="b2602c69:ProjectViewProjectNode" />
+              <item name="yhxblog" type="462c0819:PsiDirectoryNode" />
+              <item name="migrations" type="462c0819:PsiDirectoryNode" />
+              <item name="versions" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="yhxblog" type="b2602c69:ProjectViewProjectNode" />
+              <item name="yhxblog" type="462c0819:PsiDirectoryNode" />
               <item name="requirements" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -390,9 +396,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="67" y="62" width="1766" height="969" extended-state="0" />
+    <frame x="67" y="62" width="1766" height="969" extended-state="1" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18953489" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18953489" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -403,7 +409,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3293979" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.3293979" />
-      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49962714" visible="true" weight="0.34767026" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.49962714" visible="true" weight="0.34767026" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5003728" side_tool="true" weight="0.27184466" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.3293979" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
