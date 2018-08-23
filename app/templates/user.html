@@ -4,9 +4,9 @@
 
 {% block content %}
 {{super()}}
-<div class="container-fluid d-flex mt-5 flex-row">
-    <img class="rounded img-fluid" src="{{ user.gravatar(size=196) }}" alt="头像">
-<div class="ml-5">
+<div class="mt-5  media">
+    <img class="rounded img-fluid mr-5" src="{{ user.gravatar(size=169) }}" alt="头像">
+<div class="media-body">
     <div class="row">
     <h1>{{user.username}}</h1>
       <!--div class="ml-3 mt-1">
